@@ -1,4 +1,8 @@
 import express from "express";
+import {db} from "./utils/prisma"
+// import { jwt } from "jsonwebtoken";
+import z from "zod";
+import { hash } from "bcrypt";
 
 const app = express();
 app.use(express.json());
@@ -29,7 +33,7 @@ const users = [{
          locked: 2000
     },
     positions: [
-        { market: "SOL", type: "SHORT", qty: 10,  margin: 1000, liquidationPrice: 80, pnL: 200, averagePrice: 90 },
+        { market: "SOL", type: "SHORT", qty: 10, leverage: 10,  margin: 1000, maintainanceMargin: 900,  liquidationPrice: 80, pnL: 200, averagePrice: 90 , unrealisedPnL: 80, realisedPnL: 20  },
         { market: "ETH", type: "LONG", qty: 1, margin: 1000, liquidationPrice: 2000, pnL: -100, averagePrice: 1900 }
     ],
     orders: [
@@ -39,14 +43,14 @@ const users = [{
     ]
 }];
 
-type Bid = {
+type BidAsk = {
     availableQty: number,
     openOrders: { userId: number, qty: number, filledQty: number, orderId: number, createdAt: Date }[]
 }
 
 type Orderbook = {
-    bids: Record<string, Bid>,
-    asks: Record<string, Bid>,
+    bids: Record<string, BidAsk>,
+    asks: Record<string, BidAsk>,
     lastTradedPrice: number,
     indexPrice: number
 }
@@ -76,7 +80,10 @@ const fills = [{
     short: 1
 }];
 
-app.post("/signup", (req, res) => {})
+app.post("/signup", (req, res) => {
+    const {email, password} = req.body
+
+})
 app.post("/signin", (req, res) => {})
 app.post("/onramp", (req, res) => {})
 app.post("/order", (req, res) => {})
@@ -92,7 +99,9 @@ async function liqudationChecks(asset: string, price: number) {
 
 }
 
-
 async function onPriceUpdateFromBinance(asset: string, price: number) {
     liqudationChecks(asset, price);   
 }
+
+
+app.listen(3000, ()=>{console.log("server starteddddd at 3000!")})
