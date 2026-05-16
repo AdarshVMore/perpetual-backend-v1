@@ -23,20 +23,23 @@ there it will autoLiquidate after a maintainance margin like 5%
 - Liquidation Engine to Force close bad positions
 - Funding Rate Engine - Keep perp price near spot
 
-## Final Flow:
-1. User input
-2. Validate order
-3. Validate leverage
-4. Calculate notional
-5. Calculate required margin
-6. Lock collateral
-7. Create pending order
-8. Matching engine
+## Updated Flow:
+1. User input => Margin, Qty, Leverage, Long/Short, Open/Close, Market/limit
+2. Validate order => check if existing position: if no create new else update existing one + basic checks like qty > 0 [use Zod Validation here]
+3. Validate Margin => check if Available balance > Margin
+4. Calculate notional => Margin x Leverage
+5. Calculate required margin => if price x Qty < Margin it will be a valid Notional
+6. Lock collateral => Available Balance - Valid Margin
+7. Create pending order => status as Pending => add in Users Orders and Positions Array
+8. Matching engine => travers through Bids/Asks Array and check for Best price for Market
 9. Partial/full fill handling
-10. Add fills
+10. Add fills => add each fill in fills array
 11. Create/update position
 12. Calculate average entry
-13. Calculate liquidation price
+13. Calculate liquidation price => [a live price of SOL where that Order has to autoLiquidate, can bare more loss than this because Collateral isnt enough]
+long: EntryPrice x (1 - (1/leverage) + maintainanceMargin %)
+short: EntryPrice x (1 + (1/leverage) - maintainanceMargin %)
+Maintainance Margin = 5% means = 5% of initial Margin
 14. Update unrealized pnl
 15. Risk engine check
 16. Maintenance margin check
@@ -57,5 +60,9 @@ there it will autoLiquidate after a maintainance margin like 5%
     it will reduce the qty from Long
     eg: old => Long 10 @100
         new => Short 5 @110
-       
         Final => keep only: Long 5 @100
+
+
+Questions:
+What is lastTradedProce
+What is indexPrice and, actualy price to map an Order. difference betn both

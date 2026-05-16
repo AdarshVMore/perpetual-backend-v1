@@ -16,13 +16,13 @@ const users = [{
          locked: 1000
     },
      positions: [
-        { market: "SOL", type: "LONG", qty: 10, margin: 500, liquidationPrice: 80, averagePrice: 90 },
-        { market: "ETH", type: "SHORT", qty: 1, margin: 500, liquidationPrice: 2000, averagePrice: 1900 }
+        { market: "SOL", type: "SHORT", qty: 10, leverage: 10,  margin: 1000, maintainanceMargin: 25,  liquidationPrice: 80, pnL: 200, averagePrice: 90 , unrealisedPnL: 80 },
+        { market: "ETH", type: "LONG", qty: 1, leverage: 5,  margin: 1000, maintainanceMargin: 25, liquidationPrice: 900 , pnL: -100, averagePrice: 1900, unrealisedPnL: 70  }
     ],
     orders: [
-        { orderId: 1, market: "SOL", type: "LONG", qty: 10, margin: 500, orderType: "limit", price: 90, status: "filled" },
-        { orderId: 2, market: "ETH", type: "SHORT", qty: 10, margin: 500, orderType: "limit", price: 1900, status: "filled" },
-        { orderId: 3, market: "BTC", type: "LONG", qty: 10, margin: 500, orderType: "limit", price: 1900, status: "cancelled" },
+        { orderId: 10, market: "SOL", type: "SHORT", qty: 10, margin: 500, leverage: 5, orderType: "market", price: 90, filledQty: 5, remainingQty: 5, status: "filled" },
+        { orderId: 11, market: "ETH", type: "LONG", qty: 10, margin: 500, leverage: 10, orderType: "market", price: 1900, filledQty: 5, remainingQty: 5, status: "filled" },
+        { orderId: 12, market: "ZEC", type: "LONG", qty: 10, margin: 500, leverage: 15, orderType: "limit", price: 1900, filledQty: 5, remainingQty: 5, status: "open" },
     ]
 }, {
     userId: 2,
@@ -33,19 +33,19 @@ const users = [{
          locked: 2000
     },
     positions: [
-        { market: "SOL", type: "SHORT", qty: 10, leverage: 10,  margin: 1000, maintainanceMargin: 900,  liquidationPrice: 80, pnL: 200, averagePrice: 90 , unrealisedPnL: 80, realisedPnL: 20  },
-        { market: "ETH", type: "LONG", qty: 1, margin: 1000, liquidationPrice: 2000, pnL: -100, averagePrice: 1900 }
+        { market: "SOL", type: "SHORT", qty: 10, leverage: 10,  margin: 1000, maintainanceMargin: 25,  liquidationPrice: 80, pnL: 200, averagePrice: 90 , unrealisedPnL: 80 },
+        { market: "ETH", type: "LONG", qty: 1, leverage: 5,  margin: 1000, maintainanceMargin: 25, liquidationPrice: 900 , pnL: -100, averagePrice: 1900, unrealisedPnL: 70  }
     ],
     orders: [
-        { orderId: 10, market: "SOL", type: "SHORT", qty: 10, margin: 500, orderType: "market", price: 90, status: "filled" },
-        { orderId: 11, market: "ETH", type: "LONG", qty: 10, margin: 500, orderType: "market", price: 1900, status: "filled" },
-        { orderId: 12, market: "ZEC", type: "LONG", qty: 10, margin: 500, orderType: "limit", price: 1900, status: "open" },
+        { orderId: 10, market: "SOL", type: "SHORT", qty: 10, margin: 500, leverage: 5, orderType: "market", price: 90, filledQty: 5, remainingQty: 5, status: "filled" },
+        { orderId: 11, market: "ETH", type: "LONG", qty: 10, margin: 500, leverage: 10, orderType: "market", price: 1900, filledQty: 5, remainingQty: 5, status: "filled" },
+        { orderId: 12, market: "ZEC", type: "LONG", qty: 10, margin: 500, leverage: 15, orderType: "limit", price: 1900, filledQty: 5, remainingQty: 5, status: "open" },
     ]
 }];
 
 type BidAsk = {
     availableQty: number,
-    openOrders: { userId: number, qty: number, filledQty: number, orderId: number, createdAt: Date }[]
+    openOrders: { userId: number, orderId: number, price: number, qty: number, leverage: string, margin: string, filledQty: number,  createdAt: Date }[]
 }
 
 type Orderbook = {
