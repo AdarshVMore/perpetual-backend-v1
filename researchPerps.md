@@ -26,7 +26,7 @@ there it will autoLiquidate after a maintainance margin like 5%
 ## Updated Flow:
 1. User input => Margin, Qty, Leverage, Long/Short, Open/Close, Market/limit
 2. Validate order => check if existing position: if no create new else update existing one + basic checks like qty > 0 [use Zod Validation here]
-3. Validate Margin => check if Available balance > Margin
+3. Validate Margin => check if Available balance > Margin => Collateral = Margin user inputed
 4. Calculate notional => Margin x Leverage
 5. Calculate required margin => if price x Qty < Margin it will be a valid Notional
 6. Lock collateral => Available Balance - Valid Margin
@@ -35,18 +35,26 @@ there it will autoLiquidate after a maintainance margin like 5%
 9. Partial/full fill handling
 10. Add fills => add each fill in fills array
 11. Create/update position
-12. Calculate average entry
+12. Calculate average entry => if position is updated
 13. Calculate liquidation price => [a live price of SOL where that Order has to autoLiquidate, can bare more loss than this because Collateral isnt enough]
 long: EntryPrice x (1 - (1/leverage) + maintainanceMargin %)
 short: EntryPrice x (1 + (1/leverage) - maintainanceMargin %)
 Maintainance Margin = 5% means = 5% of initial Margin
-14. Update unrealized pnl
-15. Risk engine check
-16. Maintenance margin check
-17. Auto liquidation if needed
-18. Liquidation order enters orderbook
+14. Update unrealized pnl => (CurrentPrice - EntryPrice) x qty
+15. Risk engine check => check if Margin + PnL > MaintainanceMargin. else autoLiquidation
+16. Maintenance margin check 
+17. Auto liquidation if needed => loop through orders with every price update in Binance API
+18. Liquidation order enters orderbook 
 19. Matching engine executes liquidation
 20. Final state
+
+21. Case of Slipage => 1 Order wont fill your Position Opening => partial fills different different prices
+    before => 90 → 10   new Order => 25 qty at MarketPrice          90 → removed
+              91 → 8                                                91 → removed
+              92 → 20                                               92 → 13 remaining
+    3 different fills in Fills[]
+    But in Position[] entryPrice = weightedAvg = [(10×90)+(8×91)+(7×92)​] / 25 = 90.88 as EntryPrice for this position
+    Because of Slipage User might get -ve PnL in start, becs bought at higher prices as well
 
 ## Important Points Cleared
 - Longing Position => goes to BIDS
