@@ -1,5 +1,5 @@
-import express from "express";
 import type { Request, Response } from "express";
+import express from "express";
 import { db } from "./utils/prisma";
 import jwt from "jsonwebtoken";
 import z from "zod";
@@ -219,10 +219,10 @@ type BidAsk = {
 };
 
 type Orderbook = {
-  bids: Record<string, BidAsk>;
-  asks: Record<string, BidAsk>;
-  lastTradedPrice: number;
-  indexPrice: number;
+  bids: Record<string, BidAsk[]>;
+  asks: Record<string, BidAsk[]>;
+  lastTradedPrice: number; // probably used only for UI to show last traded price
+  indexPrice: number; // => binance API price for that asset, can be used to calculate Mark Price for AutoLiquidation
 };
 
 type Orderbooks = Record<string, Orderbook>;
@@ -334,21 +334,79 @@ app.post("/onramp", authMiddleware, (req:Request, res:Response) => {
 });
 
 app.post("/order",authMiddleware, (req:Request, res:Response) => {
-    const { marketId, marketType, margin, qty, leverage, position, positionStatus } = req.body
+    let { marketId, marketType, margin, qty, leverage, position, positionStatus } = req.body
+    // example body : {marketId: "SOL", marketType: "Market/Limit", price: 90, qty: 10, leverage: 5, position: Long/Short, positionStatus: Open/Close}
+
+    const action = "Open Order / Close Order"
+
+    if(positionStatus = "Open") {
+
+        if(marketType === "Market") {
+            // inputs => qty, leverage. price will be best available.
+
+            if(position === "Long") {
+
+            } else {
+
+            }
+
+        } else {
+            // inputs => price, qty, leverage. price will be best available.
+            if(position === "Long") {
+
+            } else {
+
+            }
+
+        }
+
+
+    } else {
+        if(marketType === "Market") {
+            // inputs => qty, leverage. price will be best available.
+
+            if(position === "Long") {
+
+            } else {
+
+            }
+
+        } else {
+            // inputs => price, qty, leverage. price will be best available.
+            if(position === "Long") {
+
+            } else {
+
+            }
+
+        }
+    }
+
 });
-app.delete("/order",authMiddleware, (req, res) => {});
-app.get("/equity/available",authMiddleware, (req, res) => {});
-app.get("/positions/open/:marketId",authMiddleware, (req, res) => {});
-app.get("/positions/closed/:marketId",authMiddleware, (req, res) => {});
-app.get("/orders/open/:marketId",authMiddleware, (req, res) => {});
-app.get("/orders/:marketId",authMiddleware, (req, res) => {});
-app.get("/fills",authMiddleware, (req, res) => {});
+app.delete("/order",authMiddleware, (req:Request, res:Response) => {});
+app.get("/equity/available",authMiddleware, (req:Request, res:Response) => {});
+app.get("/positions/open/:marketId",authMiddleware, (req:Request, res:Response) => {});
+app.get("/positions/closed/:marketId",authMiddleware, (req:Request, res:Response) => {});
+app.get("/orders/open/:marketId",authMiddleware, (req:Request, res:Response) => {});
+app.get("/orders/:marketId",authMiddleware, (req:Request, res:Response) => {});
+app.get("/fills",authMiddleware, (req:Request, res:Response) => {});
+
+
+
+//=====================================   FUNCTIONS    =============================================
 
 async function liqudationChecks(asset: string, price: number) {}
+
+async function validateMargin(margin:number){}
+
+async function lockCollateral(user:string, amount:number){}
+
+async function unLockCollateral(user:string, amount:number){}
 
 async function onPriceUpdateFromBinance(asset: string, price: number) {
   liqudationChecks(asset, price);
 }
+
 
 app.listen(3000, () => {
   console.log("server starteddddd at 3000!");
