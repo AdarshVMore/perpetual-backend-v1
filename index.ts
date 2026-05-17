@@ -4,6 +4,7 @@ import { db } from "./utils/prisma";
 import jwt from "jsonwebtoken";
 import z from "zod";
 import bcrypt, { hash } from "bcrypt";
+import { authMiddleware } from "./middleware/auth";
 
 const app = express();
 app.use(express.json());
@@ -23,7 +24,7 @@ type UserPositions = {
 };
 
 type UserOrders = {
-  orderId: 10;
+  orderId: string;
   market: string;
   type: string;
   qty: number;
@@ -37,22 +38,22 @@ type UserOrders = {
 };
 
 type User = {
-  userId: number;
+  userId: string;
   username: string;
   password: string;
   collateral: {
-    available: number;
+    availabe: number;
     locked: number;
   };
-  position: UserPositions[];
+  positions: UserPositions[];
   orders: UserOrders[];
 };
 
-const users:User = [
+let users: User[] = [
   {
-    userId: 1,
+    userId: "1",
     username: "harkirat",
-    password: 123123,
+    password: "123123",
     collateral: {
       availabe: 2000,
       locked: 1000,
@@ -85,7 +86,7 @@ const users:User = [
     ],
     orders: [
       {
-        orderId: 10,
+        orderId: "10",
         market: "SOL",
         type: "SHORT",
         qty: 10,
@@ -98,7 +99,7 @@ const users:User = [
         status: "filled",
       },
       {
-        orderId: 11,
+        orderId: "11",
         market: "ETH",
         type: "LONG",
         qty: 10,
@@ -111,7 +112,7 @@ const users:User = [
         status: "filled",
       },
       {
-        orderId: 12,
+        orderId: "12",
         market: "ZEC",
         type: "LONG",
         qty: 10,
@@ -126,9 +127,9 @@ const users:User = [
     ],
   },
   {
-    userId: 2,
+    userId: "2",
     username: "raman",
-    password: 123123,
+    password: "123123",
     collateral: {
       availabe: 2000,
       locked: 2000,
@@ -161,7 +162,7 @@ const users:User = [
     ],
     orders: [
       {
-        orderId: 10,
+        orderId: "10",
         market: "SOL",
         type: "SHORT",
         qty: 10,
@@ -174,7 +175,7 @@ const users:User = [
         status: "filled",
       },
       {
-        orderId: 11,
+        orderId: "11",
         market: "ETH",
         type: "LONG",
         qty: 10,
@@ -187,7 +188,7 @@ const users:User = [
         status: "filled",
       },
       {
-        orderId: 12,
+        orderId: "12",
         market: "ZEC",
         type: "LONG",
         qty: 10,
@@ -254,6 +255,7 @@ const fills = [
 
 app.post("/signup", async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  let userId = Math.random().toString();
 
   try {
     const userExists = await db.user.findUnique({
@@ -265,15 +267,32 @@ app.post("/signup", async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const token = await jwt.sign({ userId: email }, JWT_SECRET, {
+    
+    const saveUser = await db.user.create({
+      data: { email: email, password: hashedPassword },
+    });
+
+    const UserObject: User = {
+      userId: userId,
+      username: email,
+      password: hashedPassword,
+      collateral: {
+        availabe: 0,
+        locked: 0,
+      },
+      positions: [],
+      orders: [],
+    };
+
+    const token = jwt.sign({ email: email }, JWT_SECRET, {
       expiresIn: "7d",
     });
     if (!token) {
       console.log("token not generated");
     }
-    const saveUser = await db.user.create({
-      data: { email: email, password: hashedPassword },
-    });
+
+    users.push(UserObject);
+
     if (saveUser) {
       res
         .status(200)
@@ -296,6 +315,7 @@ app.post("/signin", async (req, res) => {
     const passwordCheck = await bcrypt.compare(password, userExists?.password);
     if (passwordCheck) {
       const token = jwt.sign({ email: email }, JWT_SECRET, { expiresIn: "7d" });
+      console.log("token for signedIn user = " , token)
       return res.status(200).json({ message: "user signed In", token: token });
     }
   } catch (err) {
@@ -304,15 +324,25 @@ app.post("/signin", async (req, res) => {
   }
 });
 
-app.post("/onramp", (req, res) => {});
-app.post("/order", (req, res) => {});
-app.delete("/order", (req, res) => {});
-app.get("/equity/available", (req, res) => {});
-app.get("/positions/open/:marketId", (req, res) => {});
-app.get("/positions/closed/:marketId", (req, res) => {});
-app.get("/orders/open/:marketId", (req, res) => {});
-app.get("/orders/:marketId", (req, res) => {});
-app.get("/fills", (req, res) => {});
+app.post("/onramp", authMiddleware, (req:Request, res:Response) => {
+    const {marketId, amount, email} = req.body
+    for (let user of users){
+        if( user.username === email) {
+            user.collateral.availabe +=amount
+        }
+    }
+});
+
+app.post("/order",authMiddleware, (req:Request, res:Response) => {
+    const { marketId, marketType, margin, qty, leverage, position, positionStatus } = req.body
+});
+app.delete("/order",authMiddleware, (req, res) => {});
+app.get("/equity/available",authMiddleware, (req, res) => {});
+app.get("/positions/open/:marketId",authMiddleware, (req, res) => {});
+app.get("/positions/closed/:marketId",authMiddleware, (req, res) => {});
+app.get("/orders/open/:marketId",authMiddleware, (req, res) => {});
+app.get("/orders/:marketId",authMiddleware, (req, res) => {});
+app.get("/fills",authMiddleware, (req, res) => {});
 
 async function liqudationChecks(asset: string, price: number) {}
 

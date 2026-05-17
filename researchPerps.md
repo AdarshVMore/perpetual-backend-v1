@@ -25,8 +25,8 @@ there it will autoLiquidate after a maintainance margin like 5%
 
 ## Updated Flow:
 1. User input => Margin, Qty, Leverage, Long/Short, Open/Close, Market/limit
-2. Validate order => check if existing position: if no create new else update existing one + basic checks like qty > 0 [use Zod Validation here]
-3. Validate Margin => check if Available balance > Margin => Collateral = Margin user inputed
+2. Validate Margin => check if Available balance > Margin => Collateral = Margin user inputed
+3. Validate order => check if existing position: if no create new else update existing one + basic checks like qty > 0 [use Zod Validation here]
 4. Calculate notional => Margin x Leverage
 5. Calculate required margin => if price x Qty < Margin it will be a valid Notional
 6. Lock collateral => Available Balance - Valid Margin
