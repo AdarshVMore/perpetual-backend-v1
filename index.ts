@@ -204,32 +204,160 @@ let users: User[] = [
   },
 ];
 
-type BidAsk = {
-  availableQty: number;
-  openOrders: {
-    userId: number;
-    orderId: number;
-    price: number;
-    qty: number;
-    leverage: string;
-    margin: string;
-    filledQty: number;
-    createdAt: Date;
-  }[];
-};
+export class Node {
+  data: Order;
+  next: Node | null;
 
-type Orderbook = {
-  bids: Record<string, BidAsk[]>;
-  asks: Record<string, BidAsk[]>;
-  lastTradedPrice: number; // probably used only for UI to show last traded price
-  indexPrice: number; // => binance API price for that asset, can be used to calculate Mark Price for AutoLiquidation
-};
+  constructor(data: Order) {
+    this.data = data;
+    this.next = null;
+  }
+}
 
-type Orderbooks = Record<string, Orderbook>;
+export class LinkedList {
+  head: Node | null;
+  tail: Node | null;
+  length: number;
 
-const orderbooks: Orderbooks = {
-  SOL: { bids: {}, asks: {}, lastTradedPrice: 90, indexPrice: 90.01 },
-  ETH: { bids: {}, asks: {}, lastTradedPrice: 1900, indexPrice: 1899.9 },
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
+
+  append(data: Order) {
+    const node = new Node(data);
+
+    if (!this.head) {
+      this.head = node;
+      this.tail = node;
+      this.length++;
+      return node;
+    }
+
+    this.tail!.next = node;
+    this.tail = node;
+    this.length++;
+
+    return node;
+  }
+
+  getHead() {
+    return this.head;
+  }
+
+  dequeue() {
+    if (!this.head) {
+      return null;
+    }
+
+    const removed = this.head;
+
+    this.head = this.head.next;
+
+    if (!this.head) {
+      this.tail = null;
+    }
+
+    this.length--;
+
+    return removed;
+  }
+
+  deleteOrder(orderId: string) {
+    if (this.head === null) {
+      return;
+    }
+    let current = this.head;
+    while (current.next !== null) {
+      if (
+        current.next.data.orderId === orderId
+      ) {
+        current.next = current.next.next;
+        this.length--;
+        return;
+
+      }
+      current = current.next;
+    }
+  }
+
+  isEmpty() {
+    return this.length === 0;
+  }
+
+  getTotalQty() {
+    if (!this.head) {
+      return 0;
+    }
+    let count = 0;
+    let current = this.head;
+    while (current.next !== null) {
+      count += current.data.qty;
+      current = current.next;
+    }
+    return count;
+  }
+
+  getOrder(orderId:string){
+    if(!this.head) {throw new Error("no head")}
+    let current = this.head
+    while(current.next !== null){
+      if(current.data.orderId === orderId){
+        return current.data
+      }
+      current = current.next
+    }
+    console.log("Order with ", orderId, " did not found")
+  }
+
+  getArray(data: Order) {}
+}
+
+export interface Order {
+  orderId: string;
+  price: number;
+  qty: number;
+  remainingQty: number;
+  userId: string;
+  market_id: string;
+  status: "Opened";
+  side: "BUY" | "SELL";
+}
+
+export interface SingleOrderBook {
+  asks: Map<number, LinkedList>;
+  bids: Map<number, LinkedList>;
+  sortedBidPrices: number[];
+  sortedAskPrices: number[];
+  orderMap: Map<string, Node>;
+  lastTradedPrice: number, 
+  indexPrice: number
+}
+
+export interface OrderBooks {
+  [market: string]: SingleOrderBook;
+}
+const orderbooks: OrderBooks = {
+    SOL: {
+    asks: new Map<number, LinkedList>(),
+    bids: new Map<number, LinkedList>(),
+    sortedAskPrices: [],
+    sortedBidPrices: [],
+    orderMap: new Map<string, Node>(),
+    lastTradedPrice: 90, 
+    indexPrice: 90.01 
+  },
+
+  BTC: {
+    asks: new Map<number, LinkedList>(),
+    bids: new Map<number, LinkedList>(),
+    sortedAskPrices: [],
+    sortedBidPrices: [],
+    orderMap: new Map<string, Node>(),
+    lastTradedPrice: 90, 
+    indexPrice: 90.01 
+  },
 };
 
 const fills = [
@@ -334,16 +462,16 @@ app.post("/onramp", authMiddleware, (req:Request, res:Response) => {
 });
 
 app.post("/order",authMiddleware, (req:Request, res:Response) => {
-    let { marketId, marketType, margin, qty, leverage, position, positionStatus } = req.body
+    let { marketId, marketType, price, qty, leverage, position, positionStatus } = req.body
     // example body : {marketId: "SOL", marketType: "Market/Limit", price: 90, qty: 10, leverage: 5, position: Long/Short, positionStatus: Open/Close}
-
-    const action = "Open Order / Close Order"
 
     if(positionStatus = "Open") {
 
         if(marketType === "Market") {
             // inputs => qty, leverage. price will be best available.
-
+            let lastTradedPrice = 
+            if(!lastTradedPrice){console.log("no last price exists"); return}
+            const margin = (lastTradedPrice * qty) / leverage
             if(position === "Long") {
 
             } else {
@@ -352,6 +480,7 @@ app.post("/order",authMiddleware, (req:Request, res:Response) => {
 
         } else {
             // inputs => price, qty, leverage. price will be best available.
+            const margin = (price * qty) / leverage
             if(position === "Long") {
 
             } else {
@@ -393,7 +522,7 @@ app.get("/fills",authMiddleware, (req:Request, res:Response) => {});
 
 
 
-//=====================================   FUNCTIONS    =============================================
+//==========================================   FUNCTIONS    =============================================
 
 async function liqudationChecks(asset: string, price: number) {}
 
