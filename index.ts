@@ -531,7 +531,7 @@ app.post("/onramp", authMiddleware, (req:Request, res:Response) => {
 });
 
 app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
-    let { email, marketId, marketType, price, qty, leverage, position, positionStatus } = req.body
+    let { email, marketId, marketType, inputPrice, inputQty, inputLeverage, positionType, positionStatus } = req.body
     // example body : {marketId: "SOL", marketType: "Market/Limit", price: 90, qty: 10, leverage: 5, position: Long/Short, positionStatus: Open/Close}
     const derivedOrderId = Math.random().toString()
 
@@ -544,8 +544,8 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
                 console.log("no last price exists"); 
                 return
             }
-            let userRemainingQty = qty
-            const margin = (bestAskPrice * qty) / leverage
+            let userRemainingQty = inputQty
+            const margin = (bestAskPrice * inputQty) / inputLeverage
             for(let user of users){
                 if(user.username === email) {
                     if(user.collateral.availabe >= margin) {
@@ -555,21 +555,21 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
                     user.orders.push({
                         orderId: derivedOrderId,
                         market: marketId,
-                        type: position,
-                        qty: qty,
+                        type: positionType,
+                        qty: inputQty,
                         margin: margin,
-                        leverage: leverage,
+                        leverage: inputLeverage,
                         orderType: marketType,
-                        price: price,
+                        price: inputPrice,
                         filledQty: 0,
-                        remainingQty: qty,
+                        remainingQty: inputQty,
                         status: "opened",
                     })
                     
                     break;
                 }
             }
-            if(position === "Long") {
+            if(positionType === "Long") {
                 const sortedAsks = orderbooks[marketId]?.sortedAskPrices
                 if(sortedAsks) {
                     for(let ask of sortedAsks) {
@@ -578,6 +578,7 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
                         if(!list){
                             continue
                         }
+                        let y = 0
                         while(!list.isEmpty() && userRemainingQty > 0) {
                             const head = list.getHead();
                             if (!head) {
@@ -592,121 +593,116 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
 
                             userRemainingQty -= tradedQty;
                             restingOrder.remainingQty -= tradedQty;
-                            let y = 0
                             
+                            fills.push({
+                                maker: restingOrder.userId,
+                                taker: email,
+                                market: marketId,
+                                qty: tradedQty,
+                                price: restingOrder.price,
+                                long: 1,
+                                short: 2,
+                            })
 
-                            if( userRemainingQty === 0){
-                                fills.push({
-                                    maker: restingOrder.userId,
-                                    taker: email,
-                                    market: marketId,
-                                    qty: tradedQty,
-                                    price: restingOrder.price,
-                                    long: 1,
-                                    short: 2,
-                                })
-
-                                for(let user of users){
-                                if(user.username === email) {
-                                    for(let order of user.orders){
-                                        if(order.orderId === derivedOrderId) {
-                                            order.remainingQty -= tradedQty;
-                                            order.filledQty += tradedQty
-                                            const x = tradedQty * ask
-                                            y += x
-                                            if(order.remainingQty === 0){
-                                                order.status = "Filled"
-                                                const LiqPriceForOrder = calculateLiquidationPrice(y/qty, leverage, "LONG" )
-                                                if(user.positions.length === 0) {
-                                                    user.positions.push({
-                                                        market: marketId,
-                                                        type: "LONG",
-                                                        qty: qty,
-                                                        leverage: leverage,
-                                                        margin: margin,
-                                                        maintainanceMargin: margin * maintainanceMarginPercent / 100,
-                                                        liquidationPrice: LiqPriceForOrder,
-                                                        unrealisedPnL: 0,
-                                                        pnL: 0,
-                                                        averagePrice: y/qty,
-                                                    })
-                                                } else {
-                                                    let positionForMarketIdExists = false
-                                                    for(let position of user.positions){
-                                                        if(position.market === marketId){
-                                                            positionForMarketIdExists = true
-                                                            if(position.type === "LONG"){
-                                                                position.qty += qty
-                                                            } else if (position.type === "SHORT"){
-                                                                if(position.qty > qty){
-                                                                    position.qty -= qty
-                                                                }
-                                                                if(position.qty < qty){
-                                                                    const qtyToAdd = qty - position.qty
-                                                                    position.type = "LONG"
-                                                                    position.qty = qtyToAdd
-                                                                    // other values update
-
-                                                                    const finalPnL = position.margin + position.pnL
-                                                                    user.collateral.locked -= margin
-                                                                    user.collateral.availabe += finalPnL
-                                                                }
-                                                                if(position.qty === qty){}
+                            for(let user of users){
+                            if(user.username === email) {
+                                for(let order of user.orders){
+                                    if(order.orderId === derivedOrderId) {
+                                        order.remainingQty -= tradedQty;
+                                        order.filledQty += tradedQty
+                                        const x = tradedQty * ask
+                                        y += x
+                                            order.status = "Partially Filled"
+                                            const LiqPriceForOrder = calculateLiquidationPrice(y/inputQty, inputLeverage, positionType )
+                                            if(user.positions.length === 0) {
+                                                user.positions.push({
+                                                    market: marketId,
+                                                    type: positionType,
+                                                    qty: inputQty,
+                                                    leverage: inputLeverage,
+                                                    margin: margin,
+                                                    maintainanceMargin: margin * maintainanceMarginPercent / 100,
+                                                    liquidationPrice: LiqPriceForOrder,
+                                                    unrealisedPnL: 0,
+                                                    pnL: 0,
+                                                    averagePrice: y/inputQty,
+                                                })
+                                            } else {
+                                                let positionForMarketIdExists = false
+                                                for(let position of user.positions){
+                                                    if(position.market === marketId){
+                                                        positionForMarketIdExists = true
+                                                        if(position.type === positionType){
+                                                            position.qty += tradedQty
+                                                        } else if (position.type !== positionType){
+                                                            if(position.qty > tradedQty){
+                                                                position.qty -= tradedQty
                                                             }
-                                                            
+                                                            if(position.qty < tradedQty){
+                                                                const qtyToAdd = tradedQty - position.qty
+                                                                position.type = positionType
+                                                                position.qty = qtyToAdd
+                                                                // other values update
+
+                                                                const finalPnL = position.margin + position.pnL
+                                                                user.collateral.locked -= margin
+                                                                user.collateral.availabe += finalPnL
+                                                            }
+                                                            if(position.qty === tradedQty){}
                                                         }
-                                                    }
-                                                    if(!positionForMarketIdExists){
-                                                        user.positions.push({
-                                                        market: marketId,
-                                                        type: "LONG",
-                                                        qty: qty,
-                                                        leverage: leverage,
-                                                        margin: margin,
-                                                        maintainanceMargin: 0,
-                                                        liquidationPrice: 0,
-                                                        unrealisedPnL: 0,
-                                                        pnL: 0,
-                                                        averagePrice: y/qty,
-                                                    })
+                                                        
                                                     }
                                                 }
+                                                if(!positionForMarketIdExists){
+                                                    user.positions.push({
+                                                    market: marketId,
+                                                    type: "LONG",
+                                                    qty: inputQty,
+                                                    leverage: inputLeverage,
+                                                    margin: margin,
+                                                    maintainanceMargin: 0,
+                                                    liquidationPrice: 0,
+                                                    unrealisedPnL: 0,
+                                                    pnL: 0,
+                                                    averagePrice: y/inputQty,
+                                                })
+                                                }
+                                            }
 
-                                            }
-                                            else {
-                                                order.status = "Pratially Filled"
-                                            }
-                                            
-                                            break
-                                        }
+                                        
+                                        
+                                        break
                                     }
-                                    
-                                    break;
                                 }
-                            }
+                                
                                 break;
                             }
+                        }
 
                             if(restingOrder.remainingQty === 0) {
                                 list.dequeue()
 
                             }
-                        
+
                         }
                         if(list.isEmpty()){
-                            list.deleteOrder(derivedOrderId)
-                        }                  
+                            orderbooks[marketId]?.asks.delete(ask)
+                            if(!orderbooks[marketId]) {
+                                return
+                            }
+                            orderbooks[marketId].sortedAskPrices = orderbooks[marketId].sortedAskPrices.filter((x) => x !== ask)
+                        }
                     }
                 }
-                
+
             } else {
 
             }
 
         } else {
             // inputs => price, qty, leverage. price will be best available.
-            const margin = (price * qty) / leverage
-            if(position === "Long") {
+            const margin = (inputPrice * inputQty) / inputLeverage
+            if(positionType === "Long") {
 
             } else {
 
@@ -719,7 +715,7 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
         if(marketType === "Market") {
             // inputs => qty, leverage. price will be best available.
 
-            if(position === "Long") {
+            if(positionType === "Long") {
 
             } else {
 
@@ -727,7 +723,7 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
 
         } else {
             // inputs => price, qty, leverage. price will be best available.
-            if(position === "Long") {
+            if(positionType === "Long") {
 
             } else {
 

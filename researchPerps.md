@@ -103,9 +103,10 @@ Questions:
 
 
 # working on right now
-- unrealised PNL
-- relaised PNL
-- autoLiquidationCheck on every price change
+- unrealised PNL                                    DONE
+- relaised PNL                                      DONE
+- autoLiquidationCheck on every price change        DONE
+- the Live PnL has to be calculated via Websocket from Binance
 
 
 - Frontend ke lie Sare projects deployed and working + [AI-Code-Reviewer, Perps frontend + backend]
@@ -122,3 +123,35 @@ Questions:
 
 For V2
 - 
+
+----------------------------------------------------------------
+
+# Current Status
+
+-----
+
+- Open => Market => Long        
+    1. Add Order in Users.Order[]   
+    2. Looping through OrderBook.sortedAskPrices => got "bestPrice"
+    3. Get LinkedList of Orders with "bestPrice"
+    4. Looping through Orders[] in LinkedList
+    5. get Qty of Order and fullFill it => reduce from LinkedList Order && Users.Order.Qty => Updating Status => Add in Fills[]
+    6. for Every Fill => add in Users Positions => Following this:
+        No position         -> Create
+        Same side           -> Increase
+        Opposite smaller    -> Reduce
+        Opposite equal      -> Close both
+        Opposite larger     -> Reverse
+    <!-- need to update the remaining values in userPosition -->
+
+- Open => Market => Short       1. Add Order in Users.Order[]
+- Open => Limit => Long         1. Add Order in Users.Order[]
+- Open => Limit => Short        1. Add Order in Users.Order[]
+
+
+-----
+
+- Close => Market => Long       
+- Close => Market => Short      
+- Close => Limit => Long        
+- Close => Limit => Short
