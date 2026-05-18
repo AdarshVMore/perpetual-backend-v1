@@ -30,7 +30,7 @@ there it will autoLiquidate after a maintainance margin like 5%
  -->
 2. quantity validation && market exists && limit price validation => qty > 0 && __ && price > 0
 3. Validate Margin => check if Available balance > Margin => Collateral = Margin user inputed
-4. Calculate notional => Margin x Leverage
+4. Calculate notional => Margin x Leverage 
 <!-- IF allowing Marin as input can do thi as a check Notional === price x qty , then it is a valid order -->
 4. required margin => requiredMargin = (price x Qty) / Leverage . has to be -> requiredMargin <= AvailableBalance
 6. Lock collateral => Available Balance - requiredMargin
@@ -38,7 +38,7 @@ there it will autoLiquidate after a maintainance margin like 5%
 <!-- position can be added only when the order is filled and position is created, cause it might fill the order partially so entry price for position might change -->
 8. Matching engine => travers through Bids/Asks Array and check for Best price for Market => add price-time priority
 9. Partial/full fill handling => if partial fill , it would be a case of slipage mentioned on point 21
-10. Add fills => add each fill in Fills array
+10. Add fills => add each fill in Fills array 
 11. Create/update position => check existing position and update in it if not there, create new one 
     No position         -> Create
     Same side           -> Increase
@@ -95,6 +95,27 @@ Questions:
 - if action is Open Order / Close Order for Close as well can i specify as Limit/Market Close ? or will it close at the current MarketPrice + realised PnL for the amount of quantity user getting  (current MarketPrice + realised PnL) x qty in his available balance?
  => True
 
+
+
+# Edge Cases i am not covering
+- for Market Order => if there are not enough qty to fill in all orders combined it should [cancle the order / partial fill and cancle the remaining order / other]
+- Position is Opened with every Partial Fill of an order as well
+
+
+# working on right now
+- unrealised PNL
+- relaised PNL
+- autoLiquidationCheck on every price change
+
+
+- Frontend ke lie Sare projects deployed and working + [AI-Code-Reviewer, Perps frontend + backend]
+
+# tonight
+- Try Binance & Backpack perp dashboard and check what are we entering , how are they working under the hook how are the calculating all of it
+- websocket under the hood back and forth from ChatGPT
+- Redis Queues under the hood back and forth from ChatGPT
+- Pub/Sub under the hood back and forth from ChatGPT
+- Perps Entire System of Binance => ask questions and understand the reason for each and everything why they do what they do
 
 
 

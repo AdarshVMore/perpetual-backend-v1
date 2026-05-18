@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import z from "zod";
 import bcrypt, { hash } from "bcrypt";
 import { authMiddleware } from "./middleware/auth";
+import axios from "axios";
 import { setOriginalNode } from "typescript";
 
 const app = express();
@@ -61,7 +62,7 @@ let users: User[] = [
     },
     positions: [
       {
-        market: "SOL",
+        market: "SOLUSDT",
         type: "SHORT",
         qty: 10,
         leverage: 10,
@@ -73,13 +74,13 @@ let users: User[] = [
         unrealisedPnL: 80,
       },
       {
-        market: "ETH",
+        market: "ETHUSDT",
         type: "LONG",
         qty: 1,
         leverage: 5,
         margin: 1000,
         maintainanceMargin: 25,
-        liquidationPrice: 900,
+        liquidationPrice: 1700,
         pnL: -100,
         averagePrice: 1900,
         unrealisedPnL: 70,
@@ -137,19 +138,19 @@ let users: User[] = [
     },
     positions: [
       {
-        market: "SOL",
+        market: "SOLUSDT",
         type: "SHORT",
         qty: 10,
         leverage: 10,
         margin: 1000,
         maintainanceMargin: 25,
-        liquidationPrice: 80,
+        liquidationPrice: 100,
         pnL: 200,
         averagePrice: 90,
         unrealisedPnL: 80,
       },
       {
-        market: "ETH",
+        market: "ETHUSDT",
         type: "LONG",
         qty: 1,
         leverage: 5,
@@ -392,6 +393,63 @@ const fills:Fills[] = [
   },
 ];
 
+const maintainanceMarginPercent = 5
+let liquidationPrice = 0
+
+function calculateLiquidationPrice(entryPrice:number, leverage: number, positionType: string){
+    let liqPrice:number
+    if(positionType === "SHORT") {
+        liqPrice = entryPrice * (1 + (1/leverage) - (maintainanceMarginPercent/100))
+    } else {
+        liqPrice = entryPrice * (1 - (1/leverage) + (maintainanceMarginPercent/100))
+    }
+    return liqPrice
+}   
+
+const API_BINANCE_API_KEY = process.env.API_BINANCE_API_KEY
+
+async function calculateUnrealisedPnL(entryPrice:number , qty:number, marketId:string){
+    if(!API_BINANCE_API_KEY){
+        console.log("didnt find API Key")
+    }
+    
+        const response = await axios({
+            method: 'get',
+            url: `https://fapi.binance.com/fapi/v1/ticker/price?symbol=${marketId}`,
+            headers: {'X-MBX-APIKEY': API_BINANCE_API_KEY}
+        })
+        calculateUnrealisedPnL(entryPrice, qty, marketId)
+        const priceUpdate =  response.data.price
+        const unrealisedPnL = (entryPrice -priceUpdate) * qty
+        return {unrealisedPnL,  priceUpdate}
+}
+
+function autoLiquidate(position:UserPositions, user:User){
+    console.log("auto liquidating Position for Market " , position.market , " of user " , user.username)
+}
+
+async function updateUnRealisedPnLANDautoLiquidation(){
+    if(users.length > 0){
+    while(true){
+        for(let user of users) {
+        if( user.positions.length > 0) {
+            for(let position of user.positions) {
+                const {unrealisedPnL, priceUpdate} = await calculateUnrealisedPnL(position.averagePrice, position.qty, position.market)
+                if(!unrealisedPnL) {return}
+                position.unrealisedPnL = unrealisedPnL
+                if(position.liquidationPrice <= priceUpdate) {
+                    autoLiquidate(position, user)
+                }
+            }
+        }
+    }
+    }
+}
+}
+
+updateUnRealisedPnLANDautoLiquidation()
+
+
 app.post("/signup", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   let userId = Math.random().toString();
@@ -476,6 +534,7 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
     let { email, marketId, marketType, price, qty, leverage, position, positionStatus } = req.body
     // example body : {marketId: "SOL", marketType: "Market/Limit", price: 90, qty: 10, leverage: 5, position: Long/Short, positionStatus: Open/Close}
     const derivedOrderId = Math.random().toString()
+
     if(positionStatus === "Open") {
 
         if(marketType === "Market") {
@@ -534,7 +593,20 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
                             userRemainingQty -= tradedQty;
                             restingOrder.remainingQty -= tradedQty;
                             let y = 0
-                            for(let user of users){
+                            
+
+                            if( userRemainingQty === 0){
+                                fills.push({
+                                    maker: restingOrder.userId,
+                                    taker: email,
+                                    market: marketId,
+                                    qty: tradedQty,
+                                    price: restingOrder.price,
+                                    long: 1,
+                                    short: 2,
+                                })
+
+                                for(let user of users){
                                 if(user.username === email) {
                                     for(let order of user.orders){
                                         if(order.orderId === derivedOrderId) {
@@ -544,7 +616,7 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
                                             y += x
                                             if(order.remainingQty === 0){
                                                 order.status = "Filled"
-
+                                                const LiqPriceForOrder = calculateLiquidationPrice(y/qty, leverage, "LONG" )
                                                 if(user.positions.length === 0) {
                                                     user.positions.push({
                                                         market: marketId,
@@ -552,19 +624,23 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
                                                         qty: qty,
                                                         leverage: leverage,
                                                         margin: margin,
-                                                        maintainanceMargin: 0,
-                                                        liquidationPrice: 0,
+                                                        maintainanceMargin: margin * maintainanceMarginPercent / 100,
+                                                        liquidationPrice: LiqPriceForOrder,
                                                         unrealisedPnL: 0,
                                                         pnL: 0,
                                                         averagePrice: y/qty,
                                                     })
                                                 } else {
+                                                    let positionForMarketIdExists = false
                                                     for(let position of user.positions){
                                                         if(position.market === marketId){
+                                                            positionForMarketIdExists = true
                                                             if(position.type === "LONG"){
                                                                 position.qty += qty
                                                             } else if (position.type === "SHORT"){
-                                                                if(position.qty > qty){position.qty -= qty}
+                                                                if(position.qty > qty){
+                                                                    position.qty -= qty
+                                                                }
                                                                 if(position.qty < qty){
                                                                     const qtyToAdd = qty - position.qty
                                                                     position.type = "LONG"
@@ -580,11 +656,22 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
                                                             
                                                         }
                                                     }
+                                                    if(!positionForMarketIdExists){
+                                                        user.positions.push({
+                                                        market: marketId,
+                                                        type: "LONG",
+                                                        qty: qty,
+                                                        leverage: leverage,
+                                                        margin: margin,
+                                                        maintainanceMargin: 0,
+                                                        liquidationPrice: 0,
+                                                        unrealisedPnL: 0,
+                                                        pnL: 0,
+                                                        averagePrice: y/qty,
+                                                    })
+                                                    }
                                                 }
 
-                                                
-                                                
-                                                
                                             }
                                             else {
                                                 order.status = "Pratially Filled"
@@ -597,17 +684,6 @@ app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
                                     break;
                                 }
                             }
-
-                            if( userRemainingQty = 0){
-                                fills.push({
-                                    maker: restingOrder.userId,
-                                    taker: email,
-                                    market: marketId,
-                                    qty: tradedQty,
-                                    price: restingOrder.price,
-                                    long: 1,
-                                    short: 2,
-                                })
                                 break;
                             }
 
@@ -675,8 +751,6 @@ app.get("/fills",authMiddleware, (req:Request, res:Response) => {});
 //==========================================   FUNCTIONS    =============================================
 
 async function liqudationChecks(asset: string, price: number) {}
-
-async function validateMargin(margin:number){}
 
 async function lockCollateral(user:string, amount:number){}
 
