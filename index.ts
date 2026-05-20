@@ -348,8 +348,8 @@ const orderbooks: OrderBooks = {
   SOLUSDT: {
     asks: new Map<number, LinkedList>(),
     bids: new Map<number, LinkedList>(),
-    sortedAskPrices: [90, 92, 94],
-    sortedBidPrices: [89, 87, 86],
+    sortedAskPrices: [],
+    sortedBidPrices: [],
     orderMap: new Map<string, Node>(),
     lastTradedPrice: 90,
     indexPrice: 90.01,
@@ -951,6 +951,7 @@ app.post("/create-order", authMiddleware, (req: Request, res: Response) => {
           }
         }
         if (!orderMatchingPriceFound) {
+            console.log("appending new price and list....")
           const singleOrder = {
             orderId: derivedOrderId,
             price: inputPrice,
@@ -966,6 +967,8 @@ app.post("/create-order", authMiddleware, (req: Request, res: Response) => {
           const list = new LinkedList();
           list.append(singleOrder);
           book.bids.set(inputPrice, list);
+          console.log("appended new price and list")
+          res.status(200).json({message: "added your price to the orderbook"})
         }
       }
     } else if (positionType === "SHORT") {
@@ -985,8 +988,10 @@ app.post("/create-order", authMiddleware, (req: Request, res: Response) => {
           matchingEngine(list, values, bestPrice, margin);
         }
       } else {
+        let orderMatchingPriceFound = false;
         for (let order of book?.sortedBidPrices) {
           if (inputPrice >= order) {
+            orderMatchingPriceFound = true;
             bestPrice = order;
             margin = (bestPrice * inputQty) / inputLeverage;
             addOrderToUser(req.body, derivedOrderId, margin);
@@ -998,6 +1003,26 @@ app.post("/create-order", authMiddleware, (req: Request, res: Response) => {
             matchingEngine(list, values, bestPrice, margin);
             break;
           }
+        }
+        if (!orderMatchingPriceFound) {
+            console.log("appending new price and list....")
+          const singleOrder = {
+            orderId: derivedOrderId,
+            price: inputPrice,
+            qty: inputQty,
+            remainingQty: inputQty,
+            userId: email,
+            market_id: marketId,
+            status: positionStatus,
+            side: positionType,
+          };
+          book.sortedAskPrices.push(inputPrice);
+          book.sortedAskPrices.sort((a, b) => b - a); // check once if the sorting is correct
+          const list = new LinkedList();
+          list.append(singleOrder);
+          book.asks.set(inputPrice, list);
+          console.log("appended new price and list")
+          res.status(200).json({message: "added your price to the orderbook"})
         }
       }
     }
