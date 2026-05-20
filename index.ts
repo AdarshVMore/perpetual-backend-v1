@@ -52,158 +52,163 @@ type User = {
 };
 
 let users: User[] = [
-  {
-    userId: "1",
-    username: "harkirat",
-    password: "123123",
-    collateral: {
-      availabe: 2000,
-      locked: 1000,
-    },
-    positions: [
-      {
-        market: "SOLUSDT",
-        type: "SHORT",
-        qty: 10,
-        leverage: 10,
-        margin: 1000,
-        maintainanceMargin: 25,
-        liquidationPrice: 80,
-        pnL: 200,
-        averagePrice: 90,
-        unrealisedPnL: 80,
-      },
-      {
-        market: "ETHUSDT",
-        type: "LONG",
-        qty: 1,
-        leverage: 5,
-        margin: 1000,
-        maintainanceMargin: 25,
-        liquidationPrice: 1700,
-        pnL: -100,
-        averagePrice: 1900,
-        unrealisedPnL: 70,
-      },
-    ],
-    orders: [
-      {
-        orderId: "10",
-        market: "SOL",
-        type: "SHORT",
-        qty: 10,
-        margin: 500,
-        leverage: 5,
-        orderType: "market",
-        price: 90,
-        filledQty: 5,
-        remainingQty: 5,
-        status: "filled",
-      },
-      {
-        orderId: "11",
-        market: "ETH",
-        type: "LONG",
-        qty: 10,
-        margin: 500,
-        leverage: 10,
-        orderType: "market",
-        price: 1900,
-        filledQty: 5,
-        remainingQty: 5,
-        status: "filled",
-      },
-      {
-        orderId: "12",
-        market: "ZEC",
-        type: "LONG",
-        qty: 10,
-        margin: 500,
-        leverage: 15,
-        orderType: "limit",
-        price: 1900,
-        filledQty: 5,
-        remainingQty: 5,
-        status: "open",
-      },
-    ],
-  },
-  {
-    userId: "2",
-    username: "raman",
-    password: "123123",
-    collateral: {
-      availabe: 2000,
-      locked: 2000,
-    },
-    positions: [
-      {
-        market: "SOLUSDT",
-        type: "SHORT",
-        qty: 10,
-        leverage: 10,
-        margin: 1000,
-        maintainanceMargin: 25,
-        liquidationPrice: 100,
-        pnL: 200,
-        averagePrice: 90,
-        unrealisedPnL: 80,
-      },
-      {
-        market: "ETHUSDT",
-        type: "LONG",
-        qty: 1,
-        leverage: 5,
-        margin: 1000,
-        maintainanceMargin: 25,
-        liquidationPrice: 900,
-        pnL: -100,
-        averagePrice: 1900,
-        unrealisedPnL: 70,
-      },
-    ],
-    orders: [
-      {
-        orderId: "10",
-        market: "SOL",
-        type: "SHORT",
-        qty: 10,
-        margin: 500,
-        leverage: 5,
-        orderType: "market",
-        price: 90,
-        filledQty: 5,
-        remainingQty: 5,
-        status: "filled",
-      },
-      {
-        orderId: "11",
-        market: "ETH",
-        type: "LONG",
-        qty: 10,
-        margin: 500,
-        leverage: 10,
-        orderType: "market",
-        price: 1900,
-        filledQty: 5,
-        remainingQty: 5,
-        status: "filled",
-      },
-      {
-        orderId: "12",
-        market: "ZEC",
-        type: "LONG",
-        qty: 10,
-        margin: 500,
-        leverage: 15,
-        orderType: "limit",
-        price: 1900,
-        filledQty: 5,
-        remainingQty: 5,
-        status: "open",
-      },
-    ],
-  },
+  //   // Long => SOLUSDT
+  //   // price : 88
+  //   // qty : 5
+  //   // margin: 1000
+  //   // leverage: 10,
+  //   {
+  //     userId: "1",
+  //     username: "harkirat",
+  //     password: "123123",
+  //     collateral: {
+  //       availabe: 2000,
+  //       locked: 1000,
+  //     },
+  //     positions: [
+  //       {
+  //         market: "SOLUSDT",
+  //         type: "SHORT",
+  //         qty: 10,
+  //         leverage: 10,
+  //         margin: 1000,
+  //         maintainanceMargin: 25,
+  //         liquidationPrice: 80,
+  //         pnL: 200,
+  //         averagePrice: 90,
+  //         unrealisedPnL: 80,
+  //       },
+  //       {
+  //         market: "ETHUSDT",
+  //         type: "LONG",
+  //         qty: 1,
+  //         leverage: 5,
+  //         margin: 1000,
+  //         maintainanceMargin: 25,
+  //         liquidationPrice: 1700,
+  //         pnL: -100,
+  //         averagePrice: 1900,
+  //         unrealisedPnL: 70,
+  //       },
+  //     ],
+  //     orders: [
+  //       {
+  //         orderId: "10",
+  //         market: "SOLUSDT",
+  //         type: "SHORT",
+  //         qty: 10,
+  //         margin: 500,
+  //         leverage: 5,
+  //         orderType: "market",
+  //         price: 90,
+  //         filledQty: 5,
+  //         remainingQty: 5,
+  //         status: "filled",
+  //       },
+  //       {
+  //         orderId: "11",
+  //         market: "ETHUSDT",
+  //         type: "LONG",
+  //         qty: 10,
+  //         margin: 500,
+  //         leverage: 10,
+  //         orderType: "market",
+  //         price: 1900,
+  //         filledQty: 5,
+  //         remainingQty: 5,
+  //         status: "filled",
+  //       },
+  //       {
+  //         orderId: "12",
+  //         market: "ZEC",
+  //         type: "LONG",
+  //         qty: 10,
+  //         margin: 500,
+  //         leverage: 15,
+  //         orderType: "limit",
+  //         price: 1900,
+  //         filledQty: 5,
+  //         remainingQty: 5,
+  //         status: "open",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     userId: "2",
+  //     username: "raman",
+  //     password: "123123",
+  //     collateral: {
+  //       availabe: 2000,
+  //       locked: 2000,
+  //     },
+  //     positions: [
+  //       {
+  //         market: "SOLUSDT",
+  //         type: "SHORT",
+  //         qty: 10,
+  //         leverage: 10,
+  //         margin: 1000,
+  //         maintainanceMargin: 25,
+  //         liquidationPrice: 100,
+  //         pnL: 200,
+  //         averagePrice: 90,
+  //         unrealisedPnL: 80,
+  //       },
+  //       {
+  //         market: "ETHUSDT",
+  //         type: "LONG",
+  //         qty: 1,
+  //         leverage: 5,
+  //         margin: 1000,
+  //         maintainanceMargin: 25,
+  //         liquidationPrice: 900,
+  //         pnL: -100,
+  //         averagePrice: 1900,
+  //         unrealisedPnL: 70,
+  //       },
+  //     ],
+  //     orders: [
+  //       {
+  //         orderId: "10",
+  //         market: "SOLUSDT",
+  //         type: "SHORT",
+  //         qty: 10,
+  //         margin: 500,
+  //         leverage: 5,
+  //         orderType: "market",
+  //         price: 90,
+  //         filledQty: 5,
+  //         remainingQty: 5,
+  //         status: "filled",
+  //       },
+  //       {
+  //         orderId: "11",
+  //         market: "ETHUSDT",
+  //         type: "LONG",
+  //         qty: 10,
+  //         margin: 500,
+  //         leverage: 10,
+  //         orderType: "market",
+  //         price: 1900,
+  //         filledQty: 5,
+  //         remainingQty: 5,
+  //         status: "filled",
+  //       },
+  //       {
+  //         orderId: "12",
+  //         market: "ZEC",
+  //         type: "LONG",
+  //         qty: 10,
+  //         margin: 500,
+  //         leverage: 15,
+  //         orderType: "limit",
+  //         price: 1900,
+  //         filledQty: 5,
+  //         remainingQty: 5,
+  //         status: "open",
+  //       },
+  //     ],
+  //   },
 ];
 
 export class Node {
@@ -272,13 +277,10 @@ export class LinkedList {
     }
     let current = this.head;
     while (current.next !== null) {
-      if (
-        current.next.data.orderId === orderId
-      ) {
+      if (current.next.data.orderId === orderId) {
         current.next = current.next.next;
         this.length--;
         return;
-
       }
       current = current.next;
     }
@@ -301,16 +303,18 @@ export class LinkedList {
     return count;
   }
 
-  getOrder(orderId:string){
-    if(!this.head) {throw new Error("no head")}
-    let current = this.head
-    while(current.next !== null){
-      if(current.data.orderId === orderId){
-        return current.data
-      }
-      current = current.next
+  getOrder(orderId: string) {
+    if (!this.head) {
+      throw new Error("no head");
     }
-    console.log("Order with ", orderId, " did not found")
+    let current = this.head;
+    while (current.next !== null) {
+      if (current.data.orderId === orderId) {
+        return current.data;
+      }
+      current = current.next;
+    }
+    console.log("Order with ", orderId, " did not found");
   }
 
   getArray(data: Order) {}
@@ -333,122 +337,444 @@ export interface SingleOrderBook {
   sortedBidPrices: number[];
   sortedAskPrices: number[];
   orderMap: Map<string, Node>;
-  lastTradedPrice: number, 
-  indexPrice: number
+  lastTradedPrice: number;
+  indexPrice: number;
 }
 
 export interface OrderBooks {
   [market: string]: SingleOrderBook;
 }
 const orderbooks: OrderBooks = {
-    SOL: {
+  SOLUSDT: {
     asks: new Map<number, LinkedList>(),
     bids: new Map<number, LinkedList>(),
-    sortedAskPrices: [],
-    sortedBidPrices: [],
+    sortedAskPrices: [90, 92, 94],
+    sortedBidPrices: [89, 87, 86],
     orderMap: new Map<string, Node>(),
-    lastTradedPrice: 90, 
-    indexPrice: 90.01 
+    lastTradedPrice: 90,
+    indexPrice: 90.01,
   },
-
-  BTC: {
+  BTCUSDT: {
     asks: new Map<number, LinkedList>(),
     bids: new Map<number, LinkedList>(),
     sortedAskPrices: [],
     sortedBidPrices: [],
     orderMap: new Map<string, Node>(),
-    lastTradedPrice: 90, 
-    indexPrice: 90.01 
+    lastTradedPrice: 90,
+    indexPrice: 90.01,
   },
 };
 
 interface Fills {
-    maker: string,
-    taker: string,
-    market: string,
-    qty: number,
-    price: number,
-    long: number,
-    short: number,
+  maker: string;
+  taker: string;
+  market: string;
+  qty: number;
+  price: number;
+  long: number;
+  short: number;
 }
 
-const fills:Fills[] = [
-  {
-    maker: "1",
-    taker: "2",
-    market: "SOL",
-    qty: 10,
-    price: 90,
-    long: 1,
-    short: 2,
-  },
-  {
-    maker: "1",
-    taker: "2",
-    market: "ETH",
-    qty: 1,
-    price: 1900,
-    long: 2,
-    short: 1,
-  },
+const fills: Fills[] = [
+  //   {
+  //     maker: "1",
+  //     taker: "2",
+  //     market: "SOLUSDT",
+  //     qty: 10,
+  //     price: 90,
+  //     long: 1,
+  //     short: 2,
+  //   },
+  //   {
+  //     maker: "1",
+  //     taker: "2",
+  //     market: "ETHUSDT",
+  //     qty: 1,
+  //     price: 1900,
+  //     long: 2,
+  //     short: 1,
+  //   },
 ];
 
-const maintainanceMarginPercent = 5
-let liquidationPrice = 0
+const maintainanceMarginPercent = 5;
+let liquidationPrice = 0;
 
-function calculateLiquidationPrice(entryPrice:number, leverage: number, positionType: string){
-    let liqPrice:number
-    if(positionType === "SHORT") {
-        liqPrice = entryPrice * (1 + (1/leverage) - (maintainanceMarginPercent/100))
-    } else {
-        liqPrice = entryPrice * (1 - (1/leverage) + (maintainanceMarginPercent/100))
-    }
-    return liqPrice
-}   
-
-const API_BINANCE_API_KEY = process.env.API_BINANCE_API_KEY
-
-async function calculateUnrealisedPnL(entryPrice:number , qty:number, marketId:string){
-    if(!API_BINANCE_API_KEY){
-        console.log("didnt find API Key")
-    }
-    
-        const response = await axios({
-            method: 'get',
-            url: `https://fapi.binance.com/fapi/v1/ticker/price?symbol=${marketId}`,
-            headers: {'X-MBX-APIKEY': API_BINANCE_API_KEY}
-        })
-        calculateUnrealisedPnL(entryPrice, qty, marketId)
-        const priceUpdate =  response.data.price
-        const unrealisedPnL = (entryPrice -priceUpdate) * qty
-        return {unrealisedPnL,  priceUpdate}
+function calculateLiquidationPrice(
+  entryPrice: number,
+  leverage: number,
+  positionType: string,
+) {
+  let liqPrice: number;
+  if (positionType === "SHORT") {
+    liqPrice =
+      entryPrice * (1 + 1 / leverage - maintainanceMarginPercent / 100);
+  } else {
+    liqPrice =
+      entryPrice * (1 - 1 / leverage + maintainanceMarginPercent / 100);
+  }
+  return liqPrice;
 }
 
-function autoLiquidate(position:UserPositions, user:User){
-    console.log("auto liquidating Position for Market " , position.market , " of user " , user.username)
+const API_BINANCE_API_KEY = process.env.API_BINANCE_API_KEY;
+
+async function calculateUnrealisedPnL(
+  entryPrice: number,
+  qty: number,
+  marketId: string,
+  positionType: string,
+) {
+  const response = await axios({
+    method: "get",
+    url: `https://fapi.binance.com/fapi/v1/ticker/price?symbol=${marketId}`,
+    headers: {
+      "X-MBX-APIKEY": API_BINANCE_API_KEY,
+    },
+  });
+
+  const priceUpdate = Number(response.data.price);
+
+  let unrealisedPnL = 0;
+
+  if (positionType === "LONG") {
+    unrealisedPnL = (priceUpdate - entryPrice) * qty;
+  } else {
+    unrealisedPnL = (entryPrice - priceUpdate) * qty;
+  }
+
+  return {
+    unrealisedPnL,
+    priceUpdate,
+  };
 }
 
-async function updateUnRealisedPnLANDautoLiquidation(){
-    if(users.length > 0){
-    while(true){
-        for(let user of users) {
-        if( user.positions.length > 0) {
-            for(let position of user.positions) {
-                const {unrealisedPnL, priceUpdate} = await calculateUnrealisedPnL(position.averagePrice, position.qty, position.market)
-                if(!unrealisedPnL) {return}
-                position.unrealisedPnL = unrealisedPnL
-                if(position.liquidationPrice <= priceUpdate) {
-                    autoLiquidate(position, user)
-                }
-            }
+function autoLiquidate(position: UserPositions, user: User) {
+  console.log(
+    "auto liquidating Position for Market ",
+    position.market,
+    " of user ",
+    user.username,
+  );
+}
+
+async function updateUnRealisedPnLANDautoLiquidation() {
+  if (users.length === 0) {
+    return;
+  }
+
+  setInterval(async () => {
+    for (let user of users) {
+      for (let position of user.positions) {
+        const { unrealisedPnL, priceUpdate } = await calculateUnrealisedPnL(
+          position.averagePrice,
+          position.qty,
+          position.market,
+          position.type,
+        );
+
+        position.unrealisedPnL = unrealisedPnL;
+
+        if (position.type === "LONG") {
+          if (priceUpdate <= position.liquidationPrice) {
+            autoLiquidate(position, user);
+          }
+        } else {
+          if (priceUpdate >= position.liquidationPrice) {
+            autoLiquidate(position, user);
+          }
         }
+      }
     }
-    }
-}
+  }, 1000);
 }
 
-updateUnRealisedPnLANDautoLiquidation()
+updateUnRealisedPnLANDautoLiquidation();
 
+async function addOrderToUser(
+  values: any,
+  derivedOrderId: string,
+  margin: number,
+) {
+  const {
+    email,
+    marketId,
+    positionType,
+    inputQty,
+    inputLeverage,
+    marketType,
+    inputPrice,
+  } = values;
+  console.log("adding the order to users Orders...");
+  for (let user of users) {
+    if (user.username === email) {
+      if (user.collateral.availabe < margin) {
+        throw new Error("Insufficient balance");
+      }
+
+      user.collateral.availabe -= margin;
+
+      user.collateral.locked += margin;
+      user.orders.push({
+        orderId: derivedOrderId,
+        market: marketId,
+        type: positionType,
+        qty: inputQty,
+        margin: margin,
+        leverage: inputLeverage,
+        orderType: marketType,
+        price: inputPrice,
+        filledQty: 0,
+        remainingQty: inputQty,
+        status: "opened",
+      });
+
+      console.log("Order is been added with values , \n ", user.orders);
+      break;
+    }
+  }
+}
+
+async function matchingEngine(
+  list: LinkedList,
+  values: any,
+  bestPrice: number,
+  margin: number,
+) {
+  console.log("Starting Matching Engine.....");
+  const {
+    inputQty,
+    email,
+    marketId,
+    derivedOrderId,
+    inputLeverage,
+    positionType,
+  } = values;
+
+  let userRemainingQty: number = inputQty;
+  let y: number = 0;
+
+  while (!list.isEmpty() && userRemainingQty > 0) {
+    const head = list.getHead();
+    console.log("Head is ");
+    if (!head) {
+      break;
+    }
+    const restingOrder = head.data;
+
+    const tradedQty = Math.min(userRemainingQty, restingOrder.remainingQty);
+
+    userRemainingQty -= tradedQty;
+    restingOrder.remainingQty -= tradedQty;
+
+    console.log("current remaining qty ====> ", userRemainingQty);
+    const x = tradedQty * bestPrice;
+    y += x;
+    console.log("x, y calculation y value is ", y);
+
+    fills.push({
+      maker: restingOrder.userId,
+      taker: email,
+      market: marketId,
+      qty: tradedQty,
+      price: restingOrder.price,
+      long: 1,
+      short: 2,
+    });
+
+    console.log("pushed to fills array, Looking for Users now...");
+
+    // Updating users Orders and Positions
+
+    for (let user of users) {
+      if (user.username === email) {
+        console.log("FOund the User , \n", user);
+        for (let order of user.orders) {
+          console.log("checking orders for orderId: ", derivedOrderId);
+          if (order.orderId === derivedOrderId) {
+            console.log("Found it, Updating his order...");
+            order.remainingQty -= tradedQty;
+            order.filledQty += tradedQty;
+            order.status = "Partially Filled";
+            console.log("here is the updated order.... \n", order);
+          }
+          break;
+        }
+        const LiqPriceForOrder = calculateLiquidationPrice(
+          y / inputQty,
+          inputLeverage,
+          positionType,
+        );
+        console.log(
+          "Calculated Liquidity Price ====> ",
+          LiqPriceForOrder,
+          "\n \n \n now looking for Positions for user...",
+        );
+        if (user.positions.length === 0) {
+          console.log("seems there are no positions, creating one...");
+          user.positions.push({
+            market: marketId,
+            type: positionType,
+            qty: inputQty,
+            leverage: inputLeverage,
+            margin: margin,
+            maintainanceMargin: (margin * maintainanceMarginPercent) / 100,
+            liquidationPrice: LiqPriceForOrder,
+            unrealisedPnL: 0,
+            pnL: 0,
+            averagePrice: y / inputQty,
+          });
+          console.log("created new position: \n", user.positions);
+        } else {
+          let positionForMarketIdExists = false;
+          for (let position of user.positions) {
+            if (position.market === marketId) {
+              positionForMarketIdExists = true;
+              if (position.type === positionType) {
+                console.log(
+                  "<===============  Found a position to update, this is the old Position : ==================> \n ",
+                  position,
+                );
+                const oldQty = position.qty;
+                position.qty += tradedQty;
+                const newQty = oldQty + tradedQty;
+
+                position.averagePrice =
+                  (position.averagePrice * oldQty +
+                    restingOrder.price * tradedQty) /
+                  newQty;
+
+                position.qty = newQty;
+
+                position.margin += margin * (tradedQty / inputQty); // somthing is not correct here, it fees a bit off
+
+                position.maintainanceMargin =
+                  (position.margin * maintainanceMarginPercent) / 100;
+
+                position.liquidationPrice = calculateLiquidationPrice(
+                  position.averagePrice,
+                  position.leverage,
+                  position.type,
+                );
+
+                user.collateral.availabe -= margin;
+                user.collateral.locked += margin;
+
+                console.log(
+                  "<===============  seems the positions were on same side , so these are new values for this position ==============> \n",
+                  position,
+                );
+              } else if (position.type !== positionType) {
+                if (position.qty > tradedQty) {
+                  position.qty -= tradedQty;
+                  const proportion = tradedQty / position.qty;
+
+                  const marginToRelease = position.margin * proportion;
+
+                  position.qty -= tradedQty;
+
+                  position.margin -= marginToRelease;
+
+                  position.maintainanceMargin =
+                    (position.margin * maintainanceMarginPercent) / 100;
+
+                  const realisedPnL =
+                    position.type === "SHORT"
+                      ? (position.averagePrice - restingOrder.price) * tradedQty
+                      : (restingOrder.price - position.averagePrice) *
+                        tradedQty;
+
+                  position.pnL += realisedPnL;
+                  position.liquidationPrice = calculateLiquidationPrice(
+                    position.averagePrice,
+                    position.leverage,
+                    position.type,
+                  );
+
+                  user.collateral.locked -= marginToRelease;
+
+                  user.collateral.availabe += marginToRelease + realisedPnL;
+                  console.log(
+                    "<===============  seems the positions were on Opposite side and initialQTY > incommingQTY , so these are new values for this position ==============> \n",
+                    position,
+                  );
+                  console.log("Updated User Balance is : \n", user.collateral);
+                }
+                if (position.qty < tradedQty) {
+                  const qtyToAdd = tradedQty - position.qty;
+                  position.type = positionType;
+
+                  position.qty = qtyToAdd;
+
+                  position.margin = margin * (qtyToAdd / inputQty);
+
+                  position.averagePrice = restingOrder.price;
+
+                  position.leverage = inputLeverage;
+
+                  position.maintainanceMargin =
+                    (position.margin * maintainanceMarginPercent) / 100;
+
+                  position.liquidationPrice = calculateLiquidationPrice(
+                    position.averagePrice,
+                    position.leverage,
+                    position.type,
+                  );
+                  // other values update
+                  const finalPnL = position.margin + position.pnL;
+                  user.collateral.locked -= margin;
+                  user.collateral.availabe += finalPnL;
+                  console.log(
+                    "<===============  seems the positions were on Opposite side and initialQTY < incommingQTY , so these are new values for this position ==============> \n",
+                    position,
+                  );
+                  console.log("Updated User Balance is : \n", user.collateral);
+                }
+                if (position.qty === tradedQty) {
+                }
+              }
+            }
+          }
+          if (!positionForMarketIdExists) {
+            user.positions.push({
+              market: marketId,
+              type: positionType,
+              qty: inputQty,
+              leverage: inputLeverage,
+              margin: margin,
+              maintainanceMargin: 0,
+              liquidationPrice: 0,
+              unrealisedPnL: 0,
+              pnL: 0,
+              averagePrice: y / inputQty,
+            });
+            console.log(
+              "seems this marketId has no position, added new position : \n",
+              user.positions.filter(marketId),
+            );
+          }
+        }
+      }
+
+      break;
+    }
+
+    if (restingOrder.remainingQty === 0) {
+      list.dequeue();
+      console.log(
+        "there are no orders in this price range, dequeued the Orders List",
+      );
+    }
+  }
+  if (list.isEmpty()) {
+    console.log("list is empty, updating sortedAskPrice bestprice");
+    orderbooks[marketId]?.asks.delete(bestPrice);
+    if (!orderbooks[marketId]) {
+      return;
+    }
+    orderbooks[marketId].sortedAskPrices = orderbooks[
+      marketId
+    ].sortedAskPrices.filter((x) => x !== bestPrice);
+  }
+}
 
 app.post("/signup", async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -464,9 +790,21 @@ app.post("/signup", async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     const saveUser = await db.user.create({
       data: { email: email, password: hashedPassword },
+    });
+
+    users.push({
+      userId: saveUser.userId,
+      username: email,
+      password: password,
+      collateral: {
+        availabe: 0,
+        locked: 0,
+      },
+      positions: [],
+      orders: [],
     });
 
     const UserObject: User = {
@@ -512,7 +850,7 @@ app.post("/signin", async (req, res) => {
     const passwordCheck = await bcrypt.compare(password, userExists?.password);
     if (passwordCheck) {
       const token = jwt.sign({ email: email }, JWT_SECRET, { expiresIn: "7d" });
-      console.log("token for signedIn user = " , token)
+      console.log("token for signedIn user = ", token);
       return res.status(200).json({ message: "user signed In", token: token });
     }
   } catch (err) {
@@ -521,241 +859,180 @@ app.post("/signin", async (req, res) => {
   }
 });
 
-app.post("/onramp", authMiddleware, (req:Request, res:Response) => {
-    const {marketId, amount, email} = req.body
-    for (let user of users){
-        if( user.username === email) {
-            user.collateral.availabe +=amount
-        }
+app.post("/onramp", authMiddleware, (req: Request, res: Response) => {
+  console.log("calling onramp.....");
+  const { amount, email } = req.body;
+  console.log("ampunt : ", amount, " for ", email);
+  for (let user of users) {
+    console.log("hitting onramp => here is the user ===> ", user);
+    if (user.username === email) {
+      user.collateral.availabe += amount;
+      console.log("amount added");
+      res.status(200).json({ message: "amount adddedddd" });
     }
+  }
 });
 
-app.post("/create-order",authMiddleware, (req:Request, res:Response) => {
-    let { email, marketId, marketType, inputPrice, inputQty, inputLeverage, positionType, positionStatus } = req.body
-    // example body : {marketId: "SOL", marketType: "Market/Limit", price: 90, qty: 10, leverage: 5, position: Long/Short, positionStatus: Open/Close}
-    const derivedOrderId = Math.random().toString()
+app.post("/create-order", authMiddleware, (req: Request, res: Response) => {
+  let {
+    email,
+    marketId,
+    marketType,
+    inputPrice,
+    inputQty,
+    inputLeverage,
+    positionType,
+    positionStatus,
+  } = req.body;
 
-    if(positionStatus === "Open") {
+  console.log(
+    "STEP 1 \n Recieved a Create Order request with data : ",
+    req.body,
+  );
+  const derivedOrderId = Math.random().toString();
+  let margin: number;
+  let bestPrice: number;
+  const values = {
+    orderId: derivedOrderId,
+    email: email,
+    marketId: marketId,
+    marketType: marketType,
+    inputPrice: inputPrice,
+    inputQty: inputQty,
+    inputLeverage: inputLeverage,
+    positionType: positionType,
+    positionStatus: positionStatus,
+  };
+  console.log("STEP 2 \n here are the values set : ", values);
 
-        if(marketType === "Market") {
-            // inputs => qty, leverage. price will be best available.
-            let bestAskPrice = orderbooks[marketId]?.sortedAskPrices[0]
-            if(!bestAskPrice){
-                console.log("no last price exists"); 
-                return
-            }
-            let userRemainingQty = inputQty
-            const margin = (bestAskPrice * inputQty) / inputLeverage
-            for(let user of users){
-                if(user.username === email) {
-                    if(user.collateral.availabe >= margin) {
-                        user.collateral.availabe -= margin
-                        user.collateral.locked += margin
-                    }
-                    user.orders.push({
-                        orderId: derivedOrderId,
-                        market: marketId,
-                        type: positionType,
-                        qty: inputQty,
-                        margin: margin,
-                        leverage: inputLeverage,
-                        orderType: marketType,
-                        price: inputPrice,
-                        filledQty: 0,
-                        remainingQty: inputQty,
-                        status: "opened",
-                    })
-                    
-                    break;
-                }
-            }
-            if(positionType === "Long") {
-                const sortedAsks = orderbooks[marketId]?.sortedAskPrices
-                if(sortedAsks) {
-                    for(let ask of sortedAsks) {
-                        
-                        const list = orderbooks[marketId]?.asks.get(ask)
-                        if(!list){
-                            continue
-                        }
-                        let y = 0
-                        while(!list.isEmpty() && userRemainingQty > 0) {
-                            const head = list.getHead();
-                            if (!head) {
-                              break;
-                            }
-                            const restingOrder = head.data;
-
-                            const tradedQty = Math.min(
-                                userRemainingQty,
-                                restingOrder.remainingQty,
-                            );
-
-                            userRemainingQty -= tradedQty;
-                            restingOrder.remainingQty -= tradedQty;
-                            
-                            fills.push({
-                                maker: restingOrder.userId,
-                                taker: email,
-                                market: marketId,
-                                qty: tradedQty,
-                                price: restingOrder.price,
-                                long: 1,
-                                short: 2,
-                            })
-
-                            for(let user of users){
-                            if(user.username === email) {
-                                for(let order of user.orders){
-                                    if(order.orderId === derivedOrderId) {
-                                        order.remainingQty -= tradedQty;
-                                        order.filledQty += tradedQty
-                                        const x = tradedQty * ask
-                                        y += x
-                                            order.status = "Partially Filled"
-                                            const LiqPriceForOrder = calculateLiquidationPrice(y/inputQty, inputLeverage, positionType )
-                                            if(user.positions.length === 0) {
-                                                user.positions.push({
-                                                    market: marketId,
-                                                    type: positionType,
-                                                    qty: inputQty,
-                                                    leverage: inputLeverage,
-                                                    margin: margin,
-                                                    maintainanceMargin: margin * maintainanceMarginPercent / 100,
-                                                    liquidationPrice: LiqPriceForOrder,
-                                                    unrealisedPnL: 0,
-                                                    pnL: 0,
-                                                    averagePrice: y/inputQty,
-                                                })
-                                            } else {
-                                                let positionForMarketIdExists = false
-                                                for(let position of user.positions){
-                                                    if(position.market === marketId){
-                                                        positionForMarketIdExists = true
-                                                        if(position.type === positionType){
-                                                            position.qty += tradedQty
-                                                        } else if (position.type !== positionType){
-                                                            if(position.qty > tradedQty){
-                                                                position.qty -= tradedQty
-                                                            }
-                                                            if(position.qty < tradedQty){
-                                                                const qtyToAdd = tradedQty - position.qty
-                                                                position.type = positionType
-                                                                position.qty = qtyToAdd
-                                                                // other values update
-
-                                                                const finalPnL = position.margin + position.pnL
-                                                                user.collateral.locked -= margin
-                                                                user.collateral.availabe += finalPnL
-                                                            }
-                                                            if(position.qty === tradedQty){}
-                                                        }
-                                                        
-                                                    }
-                                                }
-                                                if(!positionForMarketIdExists){
-                                                    user.positions.push({
-                                                    market: marketId,
-                                                    type: "LONG",
-                                                    qty: inputQty,
-                                                    leverage: inputLeverage,
-                                                    margin: margin,
-                                                    maintainanceMargin: 0,
-                                                    liquidationPrice: 0,
-                                                    unrealisedPnL: 0,
-                                                    pnL: 0,
-                                                    averagePrice: y/inputQty,
-                                                })
-                                                }
-                                            }
-
-                                        
-                                        
-                                        break
-                                    }
-                                }
-                                
-                                break;
-                            }
-                        }
-
-                            if(restingOrder.remainingQty === 0) {
-                                list.dequeue()
-
-                            }
-
-                        }
-                        if(list.isEmpty()){
-                            orderbooks[marketId]?.asks.delete(ask)
-                            if(!orderbooks[marketId]) {
-                                return
-                            }
-                            orderbooks[marketId].sortedAskPrices = orderbooks[marketId].sortedAskPrices.filter((x) => x !== ask)
-                        }
-                    }
-                }
-
-            } else {
-
-            }
-
-        } else {
-            // inputs => price, qty, leverage. price will be best available.
-            const margin = (inputPrice * inputQty) / inputLeverage
-            if(positionType === "Long") {
-
-            } else {
-
-            }
-
-        }
-
-
-    } else {
-        if(marketType === "Market") {
-            // inputs => qty, leverage. price will be best available.
-
-            if(positionType === "Long") {
-
-            } else {
-
-            }
-
-        } else {
-            // inputs => price, qty, leverage. price will be best available.
-            if(positionType === "Long") {
-
-            } else {
-
-            }
-
-        }
+  if (positionStatus === "Open") {
+    console.log("STEP 3 : seems the position is 'Open'");
+    const book = orderbooks[marketId];
+    console.log("STEP 4: current Orderbook ======> ", book);
+    if (!book) {
+      console.log("no orderbook exists for order ", marketId);
+      return;
     }
+    if (positionType === "LONG") {
+      console.log("Seems position is LONG");
+      if (marketType === "Market") {
+        console.log("Seems the position is Market as well");
+        for (let order in book?.sortedAskPrices) {
+          bestPrice = Number(order);
+          console.log("well best price for now is =====> ", bestPrice);
+          margin = (bestPrice * inputQty) / inputLeverage;
+          console.log("here is the margin that is been calculated : ", margin);
+          addOrderToUser(req.body, derivedOrderId, margin);
+          const list = orderbooks[marketId]?.asks.get(bestPrice);
+          console.log("here is the list ====> ", list);
+          if (!list) {
+            console.log("no list exists for this price");
+            continue;
+          }
+          matchingEngine(list, values, bestPrice, margin);
+        }
+      } else {
+        console.log("Seems the position is LIMIT as well");
+        let orderMatchingPriceFound = false;
+        for (let order of book?.sortedAskPrices) {
+          console.log("picking for order , ", order);
+          if (inputPrice >= order) {
+            orderMatchingPriceFound = true;
+            bestPrice = Number(order);
+            margin = (bestPrice * inputQty) / inputLeverage;
+            addOrderToUser(req.body, derivedOrderId, margin);
+            const list = orderbooks[marketId]?.asks.get(bestPrice);
+            if (!list) {
+              console.log("no list exists for this price");
+              continue;
+            }
+            matchingEngine(list, values, bestPrice, margin);
+            break;
+          }
+        }
+        if (!orderMatchingPriceFound) {
+          const singleOrder = {
+            orderId: derivedOrderId,
+            price: inputPrice,
+            qty: inputQty,
+            remainingQty: inputQty,
+            userId: email,
+            market_id: marketId,
+            status: positionStatus,
+            side: positionType,
+          };
+          book.sortedBidPrices.push(inputPrice);
+          book.sortedBidPrices.sort((a, b) => b - a); // check once if the sorting is correct
+          const list = new LinkedList();
+          list.append(singleOrder);
+          book.bids.set(inputPrice, list);
+        }
+      }
+    } else if (positionType === "SHORT") {
+      console.log("Seems position is SHORT");
+      if (marketType === "Market") {
+        console.log("Seems position is Market as well");
+        for (let order of book?.sortedBidPrices) {
+          bestPrice = order;
 
+          margin = (bestPrice * inputQty) / inputLeverage;
+          addOrderToUser(req.body, derivedOrderId, margin);
+          const list = orderbooks[marketId]?.bids.get(bestPrice);
+          if (!list) {
+            console.log("no list exists for this price");
+            continue;
+          }
+          matchingEngine(list, values, bestPrice, margin);
+        }
+      } else {
+        for (let order of book?.sortedBidPrices) {
+          if (inputPrice >= order) {
+            bestPrice = order;
+            margin = (bestPrice * inputQty) / inputLeverage;
+            addOrderToUser(req.body, derivedOrderId, margin);
+            const list = orderbooks[marketId]?.bids.get(bestPrice);
+            if (!list) {
+              console.log("no list exists for this price");
+              continue;
+            }
+            matchingEngine(list, values, bestPrice, margin);
+            break;
+          }
+        }
+      }
+    }
+  }
 });
-app.post("/close-order",authMiddleware, (req:Request, res:Response) => {});
-app.delete("/order",authMiddleware, (req:Request, res:Response) => {});
-app.get("/equity/available",authMiddleware, (req:Request, res:Response) => {});
-app.get("/positions/open/:marketId",authMiddleware, (req:Request, res:Response) => {});
-app.get("/positions/closed/:marketId",authMiddleware, (req:Request, res:Response) => {});
-app.get("/orders/open/:marketId",authMiddleware, (req:Request, res:Response) => {});
-app.get("/orders/:marketId",authMiddleware, (req:Request, res:Response) => {});
-app.get("/fills",authMiddleware, (req:Request, res:Response) => {});
-
-
+app.post("/close-order", authMiddleware, (req: Request, res: Response) => {});
+app.delete("/order", authMiddleware, (req: Request, res: Response) => {});
+app.get(
+  "/equity/available",
+  authMiddleware,
+  (req: Request, res: Response) => {},
+);
+app.get(
+  "/positions/open/:marketId",
+  authMiddleware,
+  (req: Request, res: Response) => {},
+);
+app.get(
+  "/positions/closed/:marketId",
+  authMiddleware,
+  (req: Request, res: Response) => {},
+);
+app.get(
+  "/orders/open/:marketId",
+  authMiddleware,
+  (req: Request, res: Response) => {},
+);
+app.get(
+  "/orders/:marketId",
+  authMiddleware,
+  (req: Request, res: Response) => {},
+);
+app.get("/fills", authMiddleware, (req: Request, res: Response) => {});
 
 //==========================================   FUNCTIONS    =============================================
-
-async function liqudationChecks(asset: string, price: number) {}
-
-async function lockCollateral(user:string, amount:number){}
-
-async function unLockCollateral(user:string, amount:number){}
-
-async function onPriceUpdateFromBinance(asset: string, price: number) {
-  liqudationChecks(asset, price);
-}
-
 
 app.listen(3000, () => {
   console.log("server starteddddd at 3000!");
