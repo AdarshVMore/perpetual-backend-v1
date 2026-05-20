@@ -6,6 +6,7 @@ const JWT_SECRET = "secret"
 
 export async function authMiddleware(req:userRequest, res:Response, next:NextFunction) {
     const tokenArray = req?.headers.authorization
+    console.log("recieved token: " , tokenArray)
 
     if(!tokenArray){
         res.status(401).json({message: "unAuthorized"})
@@ -20,6 +21,7 @@ export async function authMiddleware(req:userRequest, res:Response, next:NextFun
     }
 
     try{
+        console.log("trying to verify , ", token)
         const verify = jwt.verify(token, JWT_SECRET ) as AuthPayload
 
         if(!verify){
@@ -27,10 +29,13 @@ export async function authMiddleware(req:userRequest, res:Response, next:NextFun
         }
 
         req.email = verify.email
+        console.log(req.email , " = ", verify.email)
 
         next()
 
-    }catch(err){}
+    }catch(err){
+        console.log(err)
+    }
 
 
 }
