@@ -107,9 +107,12 @@ Questions:
 - relaised PNL                                      DONE
 - autoLiquidationCheck on every price change        DONE
 - the Live PnL has to be calculated via Websocket from Binance
-
+- partial fills mai lockBalance and available mai changes
+- leverage has to be changes in same position like 2 longs or 2 shorts or different , also the margin will add quantity will add and leverage will be calculated => cause we are not taking Leverage from frontend we are taking [price, quantity, margin] leverage is been calculated frm those average price x added 
 
 - Frontend ke lie Sare projects deployed and working + [AI-Code-Reviewer, Perps frontend + backend]
+- use Morgan to check the response time for each request
+- indexPrice has to be updarted in the Order[SOL] object from binance API
 
 # tonight
 - Try Binance & Backpack perp dashboard and check what are we entering , how are they working under the hook how are the calculating all of it
@@ -155,3 +158,52 @@ For V2
 - Close => Market => Short      
 - Close => Limit => Long        
 - Close => Limit => Short
+
+
+
+
+
+# Doubts i really dont have, not getting cleared
+- How does spot and perps prices differ ? basic samajh gya bro, samajhgya
+
+
+
+# Funding Rate Feature Flow
+1. Spot Market Exists
+2. Perp Traders Aggressively LONG
+3. Exchange Detects Premium    =>    perp > spot
+4. LONGS PAY SHORTS
+5. Funding Timestamp Arrives    =>      8h
+6. Loop all positions     =>    If LONG: deduct funding     =>      If SHORT: credit funding
+7. Cross Margin Changes && PnL changes   =>  check if Margin < MaintainanceMargin  =>  Traders Realise: Starts Shorting their possition   =>   if Margin is less: AutoLiquidate whole position
+
+
+
+
+
+
+
+
+
+
+
+locking a row in db
+consumer group in redis => 1 queue 20 workers : how does this work => consumer groups
+engine can be scalled but seperate Orderbook for seperate market 
+snapshot ? what exactly happens here?
+redis queue shapshotting to restore it if it goes down
+
+all the features in redi, websocket, pubsub and then its working, it cons etc 
+- like offset, transaction time for each data in queue, snapshotting and recovering for a queue
+- redis streams
+
+read the flow of each request on mainBackend and flowing to DB and Engine Memory
+- using DB Pollar
+
+
+
+# Some logic fixes I had to do, checked while testing
+1. unRealisedPnL formula is different for LONG anfd SHORT
+    LONG => as it was (updatedValue - entryPrice) * qty
+    SHORT => (entryPrice - updatedValue) * qty
+2. setInterval instead of while loop to update the prices
