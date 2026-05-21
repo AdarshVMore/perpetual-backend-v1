@@ -187,6 +187,22 @@ For V2
 
 
 
+
+
+
+# Some logic fixes I had to do, checked while testing
+1. unRealisedPnL formula is different for LONG anfd SHORT
+    LONG => as it was (updatedValue - entryPrice) * qty
+    SHORT => (entryPrice - updatedValue) * qty
+2. setInterval instead of while loop to update the prices
+
+
+
+
+----------
+
+
+
 locking a row in db
 consumer group in redis => 1 queue 20 workers : how does this work => consumer groups
 engine can be scalled but seperate Orderbook for seperate market 
@@ -201,9 +217,28 @@ read the flow of each request on mainBackend and flowing to DB and Engine Memory
 - using DB Pollar
 
 
+Slipage isnt the average price but is the Max price
+streams was implemented by him so was able to ans, he read it yesterday in front of me. get good with doing these things before hand, things that bhaiya mentioned in previous calss
+and that global.d.ts syntax, learn those things man
 
-# Some logic fixes I had to do, checked while testing
-1. unRealisedPnL formula is different for LONG anfd SHORT
-    LONG => as it was (updatedValue - entryPrice) * qty
-    SHORT => (entryPrice - updatedValue) * qty
-2. setInterval instead of while loop to update the prices
+lets create multiple small projects having all redis streams / queue/ caching quickly, snapshottig, zod, complex schema
+
+
+-----
+
+initialize turborepo project with a command bunx create-turbo@latest
+clearing the project
+import important things
+create tests : some 2 types of tests the [integration test , __________ ]
+implement ZOD to all of the incomming routes for validation
+create basic signup and signin with JWT and middleware
+write tests for signup, signin
+write adminToken to have access of creating a market
+design schema, for all entities, relations betwen them , that maker and taker thing i didnt get [2 maker with user and other + 2 taker with user and other]
+
+whats happening ? => the flow of admin token, create a market and and all flow of queues ===> websockets => streams [ why not pubsub , why queue, how do they work in general ] ye sab samajh nahi aaraha
+
+
+
+What to do now:
+Watch it again and after that , BlindFold Coding and revising
